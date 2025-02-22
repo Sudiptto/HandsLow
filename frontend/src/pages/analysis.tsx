@@ -15,6 +15,7 @@ const AnalysisPage: React.FC<AnalysisPageProps> = ({
   const location = useLocation();
   const weight = location.state?.weight || '';
   const selectedDrill = location.state?.selectedDrill || '';
+  const analysisData = location.state?.analysisData || {};
 
   const handleRepeat = () => {
     console.log("REPEAT clicked");
@@ -50,7 +51,7 @@ const AnalysisPage: React.FC<AnalysisPageProps> = ({
           <h2 className="text-2xl text-white font-semibold mb-4">
             Comments from Mustafa (Our AI):
           </h2>
-          <p className="text-gray-300">{aiComments}</p>
+          <p className="text-gray-300">{analysisData.analysis}</p>
         </div>
 
         <div
@@ -69,7 +70,7 @@ const AnalysisPage: React.FC<AnalysisPageProps> = ({
           </h2>
           <p className="text-gray-300 mb-2">
             <span className="font-bold text-white">Total Calories Burnt:</span>{" "}
-            {totalCalories}
+            {analysisData.calories.caloriesBurned}
           </p>
           <p className="text-gray-300">
             <span className="font-bold text-white">Seconds Total:</span>{" "}
@@ -85,6 +86,23 @@ const AnalysisPage: React.FC<AnalysisPageProps> = ({
           </p>
         </div>
       </div>
+
+     
+        <div className="mt-6 w-full max-w-md">
+          <p className="text-white mb-2">Preview:</p>
+          <video controls className="w-full rounded-lg">
+            <source src={analysisData.base64video} type="video/mp4" />
+          </video>
+        </div>
+
+        
+        <div className="mt-6 w-full max-w-md">
+          <p className="text-white mb-2">Preview:</p>
+          <video controls className="w-full rounded-lg">
+            <source src={analysisData.base64video} type="video/mp4" />
+          </video>
+        </div>
+      
 
       <div className="flex flex-col md:flex-row gap-4 mt-8">
         <button
