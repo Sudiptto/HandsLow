@@ -9,11 +9,16 @@ import uuid
 class PoseDetector:
     def __init__(self, detectionCon=0.7, trackCon=0.7):
         self.mpPose = mp.solutions.pose
+        self.mpDraw = mp.solutions.drawing_utils
         self.pose = self.mpPose.Pose(min_detection_confidence=detectionCon, min_tracking_confidence=trackCon)
 
-    def findPose(self, img):
+    def findPose(self, img, draw=True):
         imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         self.results = self.pose.process(imgRGB)
+
+        if self.results.pose_landmarks and draw:
+            self.mpDraw.draw_landmarks(img, self.results.pose_landmarks, self.mpPose.POSE_CONNECTIONS)
+
         return img
 
     def findPosition(self, img):
@@ -39,7 +44,7 @@ def compare_videos(video1_path, video2_path):
 
     output_video_path = f"{output_dir}/comparison_{uuid.uuid4().hex}.mp4"
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    fps = int(cap1.get(cv2.CAP_PROP_FPS))
+    fps = int(cap1.get(cv2.CAP_PROP_FPS)) or 30
     width, height = 640, 480
     out = cv2.VideoWriter(output_video_path, fourcc, fps, (width * 2, height))
 
@@ -53,15 +58,15 @@ def compare_videos(video1_path, video2_path):
         frame1 = cv2.resize(frame1, (width, height))
         frame2 = cv2.resize(frame2, (width, height))
 
-        frame1 = detector1.findPose(frame1)
-        frame2 = detector2.findPose(frame2)
+        frame1 = detector1.findPose(frame1, draw=True)  # Draw stick figure
+        frame2 = detector2.findPose(frame2, draw=True)  # Draw stick figure
 
         lmList1 = detector1.findPosition(frame1)
         lmList2 = detector2.findPosition(frame2)
 
         if lmList1 and lmList2:
             error, _ = fastdtw(lmList1, lmList2, dist=cosine)
-            similarity = max(0, 100 - (error * 100))  
+            similarity = max(0, 100 - (error * 100))
 
             if similarity > 85:
                 correct_frames += 1
@@ -79,7 +84,6 @@ def compare_videos(video1_path, video2_path):
     out.release()
 
     accuracy = (correct_frames / frame_count) * 100 if frame_count > 0 else 0
+    print(output_video_path)
 
-    return {"accuracy": round(accuracy, 2), "video_url": f"/static/{output_video_path}"}
-
-
+    return {"accuracy": round(accuracy, 2), "video_url": f"/Users/ishmam/HandsLow/backend/{output_video_path}"}
