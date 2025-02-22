@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Dumbbell, ArrowRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 // Type definitions for our components
 interface ButtonProps {
@@ -70,26 +71,33 @@ const Title: React.FC<TitleProps> = ({ text, subtitle }) => (
 );
 
 // Main application component
-export default function Demo() {
-    // State for weight input
+export default function HomePage() {
     const [weight, setWeight] = useState<string>('');
+    const [workoutType, setWorkoutType] = useState<string>('');
+    const navigate = useNavigate();
 
-    // Handler for weight input changes
     const handleWeightChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
         setWeight(e.target.value);
     };
 
+    const handleDrillsClick = () => {
+        setWorkoutType('drills');
+        navigate('/selectDrill', { state: { weight, workoutType: 'drills' } });
+    };
+
+    const handleLiveCoachClick = () => {
+        setWorkoutType('live-coach');
+        navigate('/liveCoach', { state: { weight, workoutType: 'live-coach' } });
+    };
+
     return (
-        // Main container with full screen black background
         <div className="min-h-screen w-full bg-black flex flex-col items-center justify-center p-8">
             <div className="w-full max-w-2xl mx-auto">
-                {/* Title section without heart icon */}
                 <Title 
                     text="HandsLOW" 
                     subtitle="Don't get clipped!" 
                 />
                 
-                {/* Weight input field */}
                 <input
                     type="number"
                     placeholder="Enter weight (in LBS)"
@@ -119,24 +127,22 @@ export default function Demo() {
                     "
                 />
                 
-                {/* Button container with OR divider */}
                 <div className="flex items-center justify-center gap-8">
-                    {/* Drills button with dumbbell icon */}
                     <CustomButton 
                         icon={<Dumbbell className="text-white" />} 
-                        onClick={() => window.location.href = '/selectDrill'}
+                        onClick={handleDrillsClick}
                     >
                         DRILLS
                     </CustomButton>
                     
-                    {/* OR divider with arrow icon */}
                     <div className="flex items-center gap-2">
                         <span className="text-white text-5xl font-bold">OR</span>
                         <ArrowRight className="text-[#6C63FF] w-8 h-8" />
                     </div>
                     
-                    {/* Live coach button */}
-                    <CustomButton>LIVE-COACH</CustomButton>
+                    <CustomButton onClick={handleLiveCoachClick}>
+                        LIVE-COACH
+                    </CustomButton>
                 </div>
             </div>
         </div>
