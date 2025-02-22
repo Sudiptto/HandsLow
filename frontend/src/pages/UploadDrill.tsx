@@ -81,55 +81,58 @@ const UploadDrill: React.FC = () => {
 
   // Handle Submit Button Click (FOR ISHMAM)
   const handleSubmit = async () => {
-    // analysisData will contain the calories burned and calories burned per minute ({calories-burned: , calories-burned-per-minute}) &  text from the API so like this {{calories-burned: , calories-burned-per-minute}, analysis: "text from the API"}
-    const analaysisData = {};
-
-
-    if (!selectedFile) {
+    if (!selectedFile || !base64Video) {
       alert('Please upload a video before submitting.');
       return;
     }
-
+  
     setIsSubmitting(true);
-
-    console.log('Submitting data...');
-    console.log('Drill:', drill);
-    console.log('Video Data:', base64Video);
-
-    // Mock API delay
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    // make a mock API call with data and get the response
-    // const response = await fetch('https://api.example.com/analyze', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify({ drill, video: base64Video }),
-    // });
-
-    // const data = await response.json();
-
-    // console.log('API Response:', data);
-
-    // mock
-    // calculate duration of the video sent (the mp4 in seconds)
-    
-
-
-    const analysisData = {
-      calories: calculateCaloriesBurned(weight, videoDuration ?? 0), // Ensure duration is not null
-      analysis: "text from the API",
-      base64video: base64Video,
-      ogVideo: base64Video
-    };
-    
-    
-    console.log("Submission complete. Redirecting to analysis...");
-
-    // Navigate to analysis page
-    navigate('/analysis', { state: { drill, analysisData, weight } });
+  
+    console.log('Submitting data to backend...');
+    console.log("DRILL: ", drill);
+    console.log("ENCODING: ", base64Video);
+    try {
+      // Send the request to the backend
+      const response = await fetch('http://10.4.0.13:5001/upload', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          drill,
+          video: base64Video, // Send the base64 video
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+  
+      const data = await response.json(); // Response from backend
+  
+      console.log('API Response: ', data);
+  
+      // Assuming data contains { accuracy: ..., encodedVideo: ..., otherFields: ... }
+      const analysisData = {
+        calories: calculateCaloriesBurned(weight, videoDuration ?? 0), // Ensure duration is not null
+        analysis: data.analysis, // Text from the API
+        correctVideo: data.encodedVideo, // Use API's returned video encoding
+        ogVideo: base64Video, // Original uploaded video
+      };
+  
+      console.log("Submission complete. Redirecting to analysis...");
+      
+      // Navigate to analysis page
+      navigate('/analysis', { state: { drill, analysisData, weight } });
+  
+    } catch (error) {
+      console.error('Error submitting data:', error);
+      alert('Failed to process the video. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
+  
 
   return (
     <div className="min-h-screen w-full bg-black flex flex-col items-center justify-center p-8">

@@ -12,7 +12,7 @@ const DrillSelector: React.FC<DrillSelectorProps> = ({ initialWeight }) => {
   const [selectedDrill, setSelectedDrill] = useState<string>('');
   const [isOpen, setIsOpen] = useState(false);
   
-  const drills = ['1x2', '1x12', '1x22', '2x1'];
+  const drills = ['1']
   const weight = location.state?.weight || localStorage.getItem('userWeight') || initialWeight || '';
 
   const handleStartClick = () => {
