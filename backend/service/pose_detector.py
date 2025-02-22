@@ -6,6 +6,8 @@ from scipy.spatial.distance import cosine
 from fastdtw import fastdtw
 import os
 import uuid
+import base64
+import tempfile
 
 class PoseDetector:
     def __init__(self, detectionCon=0.7, trackCon=0.7):
