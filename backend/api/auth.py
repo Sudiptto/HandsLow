@@ -74,5 +74,5 @@ def upload_videos():
     """
 
     accuracy_result = compare_videos("/Users/ishmam/HandsLow/jab8.mov", "/Users/ishmam/HandsLow/jab11.mov")
-
+    
     return jsonify(accuracy_result)
