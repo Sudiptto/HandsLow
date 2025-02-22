@@ -1,9 +1,6 @@
 import React from "react";
+import { useLocation } from "react-router-dom";
 
-/**
- * Props for the AnalysisPage component
- * You can pass in real data from your AI or backend here
- */
 interface AnalysisPageProps {
   aiComments?: string;
   totalCalories?: number;
@@ -15,7 +12,10 @@ const AnalysisPage: React.FC<AnalysisPageProps> = ({
   totalCalories = 300,
   totalSeconds = 120,
 }) => {
-  // Handlers for buttons
+  const location = useLocation();
+  const weight = location.state?.weight || '';
+  const selectedDrill = location.state?.selectedDrill || '';
+
   const handleRepeat = () => {
     console.log("REPEAT clicked");
     // Insert your logic here
@@ -28,10 +28,8 @@ const AnalysisPage: React.FC<AnalysisPageProps> = ({
 
   return (
     <div className="min-h-screen w-full bg-black flex flex-col items-center justify-center p-8">
-      {/* Title */}
       <h1 className="text-5xl text-white font-black mb-10">Analysis</h1>
 
-      {/* Main Container */}
       <div
         className="
           w-full
@@ -48,7 +46,6 @@ const AnalysisPage: React.FC<AnalysisPageProps> = ({
           justify-between
         "
       >
-        {/* Left Section */}
         <div className="w-full md:w-1/2 md:pr-4 mb-8 md:mb-0">
           <h2 className="text-2xl text-white font-semibold mb-4">
             Comments from Mustafa (Our AI):
@@ -56,7 +53,6 @@ const AnalysisPage: React.FC<AnalysisPageProps> = ({
           <p className="text-gray-300">{aiComments}</p>
         </div>
 
-        {/* Vertical Divider (on larger screens) */}
         <div
           className="
             hidden
@@ -67,7 +63,6 @@ const AnalysisPage: React.FC<AnalysisPageProps> = ({
           "
         />
 
-        {/* Right Section */}
         <div className="w-full md:w-1/2 md:pl-4">
           <h2 className="text-2xl text-white font-semibold mb-4">
             Analysis Details
@@ -80,10 +75,17 @@ const AnalysisPage: React.FC<AnalysisPageProps> = ({
             <span className="font-bold text-white">Seconds Total:</span>{" "}
             {totalSeconds}
           </p>
+          <p className="text-gray-300">
+            <span className="font-bold text-white">Weight:</span>{" "}
+            {weight} LBS
+          </p>
+          <p className="text-gray-300">
+            <span className="font-bold text-white">Selected Drill:</span>{" "}
+            {selectedDrill}
+          </p>
         </div>
       </div>
 
-      {/* Buttons */}
       <div className="flex flex-col md:flex-row gap-4 mt-8">
         <button
           onClick={handleRepeat}
