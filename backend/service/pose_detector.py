@@ -1,10 +1,13 @@
 import cv2
 import mediapipe as mp
 import numpy as np
+import uuid
 from scipy.spatial.distance import cosine
 from fastdtw import fastdtw
 import os
 import uuid
+import base64
+import tempfile
 
 class PoseDetector:
     def __init__(self, detectionCon=0.7, trackCon=0.7):
@@ -39,14 +42,16 @@ def compare_videos(video1_path, video2_path):
 
     frame_count = 0
     correct_frames = 0
-    output_dir = "processed_videos"
-    os.makedirs(output_dir, exist_ok=True)
 
-    output_video_path = f"{output_dir}/comparison_{uuid.uuid4().hex}.mp4"
-    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    fps = int(cap1.get(cv2.CAP_PROP_FPS)) or 30
     width, height = 640, 480
-    out = cv2.VideoWriter(output_video_path, fourcc, fps, (width * 2, height))
+    fps = int(cap1.get(cv2.CAP_PROP_FPS)) or 30
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+
+    # Create a temporary file to store the processed video
+    with tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_video:
+        temp_video_path = temp_video.name
+
+    out = cv2.VideoWriter(temp_video_path, fourcc, fps, (width * 2, height))
 
     while cap1.isOpened() and cap2.isOpened():
         ret1, frame1 = cap1.read()
@@ -83,7 +88,10 @@ def compare_videos(video1_path, video2_path):
     cap2.release()
     out.release()
 
-    accuracy = (correct_frames / frame_count) * 100 if frame_count > 0 else 0
-    print(output_video_path)
+    # Read the generated video and encode it as Base64
+    with open(temp_video_path, "rb") as video_file:
+        base64_video = base64.b64encode(video_file.read()).decode('utf-8')
 
-    return {"accuracy": round(accuracy, 2), "video_url": f"/Users/ishmam/HandsLow/backend/{output_video_path}"}
+    accuracy = (correct_frames / frame_count) * 100 if frame_count > 0 else 0
+
+    return {"accuracy": round(accuracy, 2), "encoded_video": base64_video}

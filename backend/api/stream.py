@@ -33,8 +33,6 @@ def upload_videos():
     if drill_name not in drill_encodings:
         drill_encodings[drill_name] = encode_drill(drill_name)
 
-    print("encodings obtainsed, about to compare")
-
     accuracy_result = compare_videos(benchmark_video_encoding, drill_encodings[drill_name])
 
     return jsonify(accuracy_result)
