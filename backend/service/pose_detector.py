@@ -40,9 +40,16 @@ def compare_videos(video1_path, video2_path):
 
     frame_count = 0
     correct_frames = 0
-    encoded_frames = []
 
     width, height = 640, 480
+    fps = int(cap1.get(cv2.CAP_PROP_FPS)) or 30
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+
+    # Create a temporary file to store the processed video
+    with tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_video:
+        temp_video_path = temp_video.name
+
+    out = cv2.VideoWriter(temp_video_path, fourcc, fps, (width * 2, height))
 
     while cap1.isOpened() and cap2.isOpened():
         ret1, frame1 = cap1.read()
@@ -73,15 +80,16 @@ def compare_videos(video1_path, video2_path):
         frame_count += 1
 
         combined_frame = cv2.hconcat([frame1, frame2])
-
-        # Encode the frame as a JPEG and store it in memory
-        success, encoded_image = cv2.imencode('.jpg', combined_frame)
-        if success:
-            encoded_frames.append(encoded_image.tobytes())
+        out.write(combined_frame)
 
     cap1.release()
     cap2.release()
+    out.release()
+
+    # Read the generated video and encode it as Base64
+    with open(temp_video_path, "rb") as video_file:
+        base64_video = base64.b64encode(video_file.read()).decode('utf-8')
 
     accuracy = (correct_frames / frame_count) * 100 if frame_count > 0 else 0
 
-    return {"accuracy": round(accuracy, 2), "encoded_frames": encoded_frames}
+    return {"accuracy": round(accuracy, 2), "encoded_video": base64_video}
