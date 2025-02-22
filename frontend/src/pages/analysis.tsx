@@ -99,7 +99,7 @@ const AnalysisPage: React.FC<AnalysisPageProps> = ({
         <div className="mt-6 w-full max-w-md">
           <p className="text-white mb-2">Preview:</p>
           <video controls className="w-full rounded-lg">
-            <source src={analysisData.base64video} type="video/mp4" />
+            <source src={analysisData.ogVideo} type="video/mp4" />
           </video>
         </div>
       

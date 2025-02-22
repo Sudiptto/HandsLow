@@ -120,7 +120,8 @@ const UploadDrill: React.FC = () => {
     const analysisData = {
       calories: calculateCaloriesBurned(weight, videoDuration ?? 0), // Ensure duration is not null
       analysis: "text from the API",
-      base64video: base64Video
+      base64video: base64Video,
+      ogVideo: base64Video
     };
     
     
