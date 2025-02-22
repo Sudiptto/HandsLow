@@ -1,6 +1,7 @@
 import cv2
 import mediapipe as mp
 import numpy as np
+import uuid
 from scipy.spatial.distance import cosine
 from fastdtw import fastdtw
 import os
@@ -39,14 +40,9 @@ def compare_videos(video1_path, video2_path):
 
     frame_count = 0
     correct_frames = 0
-    output_dir = "processed_videos"
-    os.makedirs(output_dir, exist_ok=True)
+    encoded_frames = []
 
-    output_video_path = f"{output_dir}/comparison_{uuid.uuid4().hex}.mp4"
-    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    fps = int(cap1.get(cv2.CAP_PROP_FPS)) or 30
     width, height = 640, 480
-    out = cv2.VideoWriter(output_video_path, fourcc, fps, (width * 2, height))
 
     while cap1.isOpened() and cap2.isOpened():
         ret1, frame1 = cap1.read()
@@ -77,13 +73,15 @@ def compare_videos(video1_path, video2_path):
         frame_count += 1
 
         combined_frame = cv2.hconcat([frame1, frame2])
-        out.write(combined_frame)
+
+        # Encode the frame as a JPEG and store it in memory
+        success, encoded_image = cv2.imencode('.jpg', combined_frame)
+        if success:
+            encoded_frames.append(encoded_image.tobytes())
 
     cap1.release()
     cap2.release()
-    out.release()
 
     accuracy = (correct_frames / frame_count) * 100 if frame_count > 0 else 0
-    print(output_video_path)
 
-    return {"accuracy": round(accuracy, 2), "video_url": f"/Users/ishmam/HandsLow/backend/{output_video_path}"}
+    return {"accuracy": round(accuracy, 2), "encoded_frames": encoded_frames}
