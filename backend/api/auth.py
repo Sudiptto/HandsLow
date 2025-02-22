@@ -59,20 +59,3 @@ def register():
 
     access_token = create_access_token(identity=username)
     return jsonify(access_token=access_token)
-
-@auth.route('/upload', methods=['POST'])
-def upload_videos():
-    if 'benchmark' not in request.files or 'user' not in request.files:
-        return jsonify({"error": "Both benchmark and user videos are required"}), 400
-
-    """
-    benchmark = request.files['benchmark']
-    user = request.files['user']
-
-    benchmark.save(benchmark_path)
-    user.save(user_path)
-    """
-
-    accuracy_result = compare_videos("/Users/ishmam/HandsLow/jab8.mov", "/Users/ishmam/HandsLow/jab11.mov")
-
-    return jsonify(accuracy_result)
