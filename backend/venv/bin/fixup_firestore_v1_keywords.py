@@ -1,4 +1,4 @@
-#!/Users/ishmam/user-auth/backend/venv/bin/python3.11
+#!/Users/muslimhussaini/Desktop/HandsLow/backend/venv/bin/python3.11
 # -*- coding: utf-8 -*-
 # Copyright 2024 Google LLC
 #

@@ -9,6 +9,7 @@ import Analysis from "./pages/analysis";
 import NotFound from "./pages/NotFound";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
+import LiveCoach from "./pages/liveCoach";
 
 // Import your components
 
@@ -21,6 +22,7 @@ const Router: React.FC = () => {
         <Route path="/selectDrill" Component={SelectDrill}></Route>
         <Route path="/uploadDrill" Component={UploadDrill}></Route>
         <Route path="/analysis" Component={Analysis}></Route>
+        <Route path="liveCoach" Component={LiveCoach}></Route>
 
         {/* <Route path="*" Component={NotFound}></Route>
         <Route path="/login" Component={LoginPage}></Route>
