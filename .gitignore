@@ -5,6 +5,12 @@ backend/keys/service-account.json
 backend/venv
 backend/keys/path.txt
 
+
+venv
 env
 
 backend/api/__pycache__
+
+backend/service/__pycache__
+
+passwords.py
