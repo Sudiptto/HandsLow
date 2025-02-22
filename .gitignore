@@ -8,3 +8,5 @@ backend/keys/path.txt
 env
 
 backend/api/__pycache__
+
+backend/service/__pycache__
