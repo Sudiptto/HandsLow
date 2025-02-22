@@ -1,32 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronDown, Play } from 'lucide-react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 interface DrillSelectorProps {
   initialWeight?: string;
 }
 
 const DrillSelector: React.FC<DrillSelectorProps> = ({ initialWeight }) => {
-  // States for drill selection and dropdown
+  const location = useLocation();
+  const navigate = useNavigate();
   const [selectedDrill, setSelectedDrill] = useState<string>('');
   const [isOpen, setIsOpen] = useState(false);
   
-  // Available drills
   const drills = ['1x2', '1x12', '1x22', '2x1'];
+  const weight = location.state?.weight || localStorage.getItem('userWeight') || initialWeight || '';
 
-  // Load stored weight from localStorage
-  const weight = localStorage.getItem('userWeight') || initialWeight || '';
+  const handleStartClick = () => {
+    if (selectedDrill) {
+      console.log('Starting drill:', selectedDrill);
+      navigate('/uploadDrill', { state: { weight, selectedDrill } });
+    }
+  };
 
   return (
     <div className="min-h-screen w-full bg-black flex flex-col items-center justify-center p-8">
       <div className="w-full max-w-md mx-auto text-center">
         <h1 className="text-5xl text-white font-black mb-8">Choose Drill</h1>
         
-        {/* Weight display */}
         <div className="mb-6 text-white text-xl">
           Weight: {weight} LBS
         </div>
 
-        {/* Custom dropdown */}
         <div className="relative mb-8">
           <button
             onClick={() => setIsOpen(!isOpen)}
@@ -53,7 +57,6 @@ const DrillSelector: React.FC<DrillSelectorProps> = ({ initialWeight }) => {
             `} />
           </button>
 
-          {/* Dropdown menu */}
           {isOpen && (
             <div className="
               absolute
@@ -90,15 +93,8 @@ const DrillSelector: React.FC<DrillSelectorProps> = ({ initialWeight }) => {
           )}
         </div>
 
-        {/* Start button */}
         <button
-          onClick={() => {
-            if (selectedDrill) {
-              console.log('Starting drill:', selectedDrill);
-              // Navigate to upload drill page
-              window.location.href = `/uploadDrill`;
-            }
-          }}
+          onClick={handleStartClick}
           disabled={!selectedDrill}
           className={`
             w-full

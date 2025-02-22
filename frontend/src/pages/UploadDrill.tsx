@@ -1,11 +1,15 @@
 import React, { useState, DragEvent } from 'react';
 import { UploadCloud } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 
 const UploadDrill: React.FC = () => {
+  const location = useLocation();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
 
-  // Handle drag events
+  const weight = location.state?.weight || '';
+  const selectedDrill = location.state?.selectedDrill || '';
+
   const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     setIsDragging(true);
@@ -24,17 +28,14 @@ const UploadDrill: React.FC = () => {
     }
   };
 
-  // Handle file selection
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       setSelectedFile(e.target.files[0]);
     }
   };
 
-  // Simulate file upload
   const handleUpload = () => {
     if (selectedFile) {
-      // Your upload logic goes here
       console.log('Uploading file:', selectedFile);
       alert(`Uploading: ${selectedFile.name}`);
     }
@@ -44,7 +45,13 @@ const UploadDrill: React.FC = () => {
     <div className="min-h-screen w-full bg-black flex flex-col items-center justify-center p-8">
       <h1 className="text-5xl text-white font-black mb-8">Upload Drill</h1>
       
-      {/* Drag & Drop / Browse Area */}
+      <div className="mb-6 text-white text-xl">
+        Weight: {weight} LBS
+      </div>
+      <div className="mb-6 text-white text-xl">
+        Selected Drill: {selectedDrill}
+      </div>
+
       <div
         className={`
           relative
@@ -70,7 +77,6 @@ const UploadDrill: React.FC = () => {
         </p>
         <p className="text-gray-400">Supported formats: MP4</p>
         
-        {/* Invisible file input to capture clicks */}
         <input
           type="file"
           accept="video/mp4"
@@ -79,7 +85,6 @@ const UploadDrill: React.FC = () => {
         />
       </div>
 
-      {/* Upload Button */}
       <button
         onClick={handleUpload}
         disabled={!selectedFile}
