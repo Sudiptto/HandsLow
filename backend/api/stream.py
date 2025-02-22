@@ -13,6 +13,8 @@ from service.pose_detector import compare_videos
 
 from service.access_drill import encode_drill
 
+from service.punch_detection import analyze_video
+
 import base64
 import os
 
@@ -45,25 +47,31 @@ UPLOAD_FOLDER = "/Users/ishmam/HandsLow-1/backend/processed_videos"
 @stream.route("/liveCoach", methods=['POST'])
 def liveCoach():
     try:
+        # Step 1: Get the video data from the request
         data = request.json
         if "video" not in data:
             return jsonify({"error": "No video data received"}), 400
 
-        # Decode Base64 video
+        # Step 2: Decode Base64 video
         video_data = data["video"].split(",")[1]  # Remove metadata header if present
         video_bytes = base64.b64decode(video_data)
 
-        # Generate a unique filename
+        # Step 3: Generate a unique filename and define the path
         filename = f"{uuid.uuid4().hex}.webm"
         file_path = os.path.join(UPLOAD_FOLDER, filename)
 
-        # Save the video
+        # Step 4: Save the video to the upload folder
         with open(file_path, "wb") as video_file:
             video_file.write(video_bytes)
 
-        return jsonify({"message": "Video saved successfully", "video_path": file_path}), 200
+        # Step 5: Call the analyze_video function with the file path
+        screenshot_dir = "screenshots"  # Specify the directory where screenshots will be saved
+        analyze_video(file_path, screenshot_dir)
+
+        return jsonify({"message": "Video saved and analyzed successfully", "video_path": file_path}), 200
 
     except Exception as e:
         return jsonify({"error": f"Failed to process video: {str(e)}"}), 500
+
 
 
