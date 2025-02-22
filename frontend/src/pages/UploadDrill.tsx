@@ -6,6 +6,7 @@ const UploadDrill: React.FC = () => {
   const location = useLocation();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [base64Video, setBase64Video] = useState<string | null>(null);
 
   const weight = location.state?.weight || '';
   const selectedDrill = location.state?.selectedDrill || '';
@@ -24,27 +25,46 @@ const UploadDrill: React.FC = () => {
     e.preventDefault();
     setIsDragging(false);
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      setSelectedFile(e.dataTransfer.files[0]);
+      const file = e.dataTransfer.files[0];
+      setSelectedFile(file);
+      convertToBase64(file);
     }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
-      setSelectedFile(e.target.files[0]);
+      const file = e.target.files[0];
+      setSelectedFile(file);
+      convertToBase64(file);
     }
   };
 
-  const handleUpload = () => {
-    if (selectedFile) {
-      console.log('Uploading file:', selectedFile);
-      alert(`Uploading: ${selectedFile.name}`);
+  const convertToBase64 = (file: File) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      if (typeof reader.result === 'string') {
+        setBase64Video(reader.result);
+      }
+    };
+    reader.onerror = (error) => {
+      console.error('Error converting file:', error);
+    };
+  };
+
+  const handleCopyEmbedCode = () => {
+    if (base64Video) {
+      const embedCode = `<video controls width="400"><source src="${base64Video}" type="video/mp4"></video>`;
+      navigator.clipboard.writeText(embedCode).then(() => {
+        alert('Embed code copied to clipboard!');
+      });
     }
   };
 
   return (
     <div className="min-h-screen w-full bg-black flex flex-col items-center justify-center p-8">
       <h1 className="text-5xl text-white font-black mb-8">Upload Drill</h1>
-      
+
       <div className="mb-6 text-white text-xl">
         Weight: {weight} LBS
       </div>
@@ -76,7 +96,7 @@ const UploadDrill: React.FC = () => {
           </span>
         </p>
         <p className="text-gray-400">Supported formats: MP4</p>
-        
+
         <input
           type="file"
           accept="video/mp4"
@@ -85,28 +105,20 @@ const UploadDrill: React.FC = () => {
         />
       </div>
 
-      <button
-        onClick={handleUpload}
-        disabled={!selectedFile}
-        className={`
-          bg-[#6C63FF] 
-          text-white 
-          text-xl 
-          font-bold 
-          py-3 px-8 
-          rounded-full
-          transition-all 
-          hover:scale-105 
-          active:scale-95
-          ${
-            selectedFile
-              ? 'cursor-pointer'
-              : 'cursor-not-allowed opacity-50'
-          }
-        `}
-      >
-        UPLOAD
-      </button>
+      {base64Video && (
+        <div className="mt-6 w-full max-w-md">
+          <p className="text-white mb-2">Preview:</p>
+          <video controls className="w-full rounded-lg">
+            <source src={base64Video} type="video/mp4" />
+          </video>
+          <button
+            onClick={handleCopyEmbedCode}
+            className="mt-4 bg-[#6C63FF] text-white text-xl font-bold py-3 px-8 rounded-full transition-all hover:scale-105 active:scale-95"
+          >
+            Copy Embed Code
+          </button>
+        </div>
+      )}
     </div>
   );
 };
