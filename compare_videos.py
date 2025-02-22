@@ -4,9 +4,39 @@ import backend.service.pose_detector as pm
 from scipy.spatial.distance import cosine
 from fastdtw import fastdtw
 
-def compare_videos(benchmark_path, user_path):
-    benchmark_cam = cv2.VideoCapture(benchmark_path)
-    user_cam = cv2.VideoCapture(user_path)
+import base64
+import numpy as np
+import tempfile
+
+def base64_to_cv2_video(base64_string):
+    # Decode Base64 string into bytes
+    video_bytes = base64.b64decode(base64_string)
+    
+    # Create a temporary file
+    with tempfile.NamedTemporaryFile(delete=True, suffix=".mp4") as temp_video:
+        temp_video.write(video_bytes)  # Write the decoded bytes
+        temp_video.flush()  # Ensure all data is written
+
+        # Open the temporary video with OpenCV
+        cap = cv2.VideoCapture(temp_video.name)
+
+        while cap.isOpened():
+            ret, frame = cap.read()
+            if not ret:
+                break
+            cv2.imshow("Video", frame)
+            
+            # Press 'q' to exit
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+        
+        cap.release()
+        cv2.destroyAllWindows()
+
+
+def compare_videos(benchmark_encoding, user_encoding):
+    benchmark_cam = base64_to_cv2_video(benchmark_encoding)
+    user_cam = base64_to_cv2_video(user_encoding)
 
     detector_benchmark = pm.PoseDetector()
     detector_user = pm.PoseDetector()
