@@ -13,7 +13,8 @@ const LoginPage: React.FC = () => {
 
     const navigate = useNavigate();
     
-    const loginUser = async () => {
+    const loginUser = async (e: React.FormEvent) => {
+        e.preventDefault();
         const response = await httpClient.post('//127.0.0.1:5000/token', {
             email,
             password,
@@ -46,7 +47,7 @@ const LoginPage: React.FC = () => {
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
               Sign in to your account
             </h1>
-            <form className="space-y-4 md:space-y-6" action="#">
+            <form className="space-y-4 md:space-y-6">
               <div>
                 <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                   Your email
@@ -85,7 +86,6 @@ const LoginPage: React.FC = () => {
                       aria-describedby="remember"
                       type="checkbox"
                       className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
-                      required
                     />
                   </div>
                   <div className="ml-3 text-sm">
