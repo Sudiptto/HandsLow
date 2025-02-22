@@ -38,7 +38,3 @@ def upload_videos():
     accuracy_result = compare_videos(benchmark_video_encoding, drill_encodings[drill_name])
 
     return jsonify(accuracy_result)
-
-@stream.route("/helloworld", methods=['POST'])
-def helloworld():
-    return "helloworld"
