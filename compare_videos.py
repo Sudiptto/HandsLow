@@ -1,6 +1,6 @@
 import cv2
 import time
-import pose_detector as pm
+import backend.service.pose_detector as pm
 from scipy.spatial.distance import cosine
 from fastdtw import fastdtw
 

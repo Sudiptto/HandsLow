@@ -65,7 +65,7 @@ def compare_videos(video1_path, video2_path):
                         cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
             # Count correct frames if similarity is above 80%
-            if similarity > 80:
+            if similarity > 85:
                 correct_frames += 1
 
         frame_count += 1
@@ -86,5 +86,4 @@ def compare_videos(video1_path, video2_path):
     print(f"Final Accuracy: {round(accuracy, 2)}%")
 
 if __name__ == "__main__":
-    compare_videos("/Users/ishmam/HandsLow/jab8.mov", "/Users/ishmam/HandsLow/jab8.mov")
-
+    compare_videos("/Users/ishmam/HandsLow/jab8.mov", "/Users/ishmam/HandsLow/jab11.mov")
