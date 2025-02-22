@@ -1,2 +1,3 @@
 backend/keys/*
 !backend/keys/.gitkeep
+backend/keys/service-account.json
