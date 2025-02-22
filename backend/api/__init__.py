@@ -18,10 +18,11 @@ def create_app():
     CORS(app, supports_credentials=True, origins=["http://localhost:5173"])
 
     from .auth import auth
-    from .uploadtest import uploadtest_bp  # Import the uploadtest blueprint
+    from .stream import stream
+    # import other routes here
 
     app.register_blueprint(auth, url_prefix="/")
-    app.register_blueprint(uploadtest_bp, url_prefix="/api")  # Register the uploadtest blueprint
+    app.register_blueprint(stream, url_prefix="/")
 
     """
     with app.app_context():

@@ -93,7 +93,7 @@ const UploadDrill: React.FC = () => {
     console.log("ENCODING: ", base64Video);
     try {
       // Send the request to the backend
-      const response = await fetch('http://10.4.0.13:5001/upload', {
+      const response = await fetch('http://127.0.0.1:5001/upload', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

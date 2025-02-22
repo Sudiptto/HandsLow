@@ -9,6 +9,8 @@ from flask_jwt_extended import JWTManager
 
 from service.firestore import db, check_user_exists, register_new_user, check_email_exists
 
+from service.pose_detector import compare_videos
+
 auth = Blueprint('auth', __name__)
 
 @auth.route("/token", methods=["POST"])

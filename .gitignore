@@ -4,3 +4,5 @@ backend/keys/service-account.json
 
 backend/venv
 backend/keys/path.txt
+
+env
