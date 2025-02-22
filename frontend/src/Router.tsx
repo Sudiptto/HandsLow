@@ -5,6 +5,7 @@ import LandingPage from "./pages/LandingPage";
 import HomePage from "./pages/HomePage";
 import SelectDrill from "./pages/selectDrill";
 import UploadDrill from "./pages/UploadDrill";
+import Analysis from "./pages/analysis";
 import NotFound from "./pages/NotFound";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
@@ -19,7 +20,8 @@ const Router: React.FC = () => {
         <Route path="/" Component={HomePage}></Route>
         <Route path="/selectDrill" Component={SelectDrill}></Route>
         <Route path="/uploadDrill" Component={UploadDrill}></Route>
-        
+        <Route path="/analysis" Component={Analysis}></Route>
+
         {/* <Route path="*" Component={NotFound}></Route>
         <Route path="/login" Component={LoginPage}></Route>
         <Route path="/register" Component={RegisterPage}></Route> */}
