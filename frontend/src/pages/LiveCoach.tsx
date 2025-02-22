@@ -87,7 +87,7 @@ const LiveCoach = () => {
                 video: base64String,
             };
 
-            const response = await fetch("http://localhost:5000/upload", {
+            const response = await fetch("http://localhost:5000/liveCoach", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
