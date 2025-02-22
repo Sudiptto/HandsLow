@@ -1,3 +1,6 @@
 backend/keys/*
 !backend/keys/.gitkeep
 backend/keys/service-account.json
+
+backend/venv
+backend/keys/path.txt

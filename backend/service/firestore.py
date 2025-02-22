@@ -1,14 +1,15 @@
 import firebase_admin
 from firebase_admin import credentials, firestore
 import datetime
+import os
 
 # Path to your service account JSON file
-SERVICE_ACCOUNT_PATH = "/Users/ishmam/echo/backend/service/keys/service-account.json"
+
 
 def initialize_firebase():
     try:
         # Initialize the Firebase Admin SDK
-        cred = credentials.Certificate(SERVICE_ACCOUNT_PATH)
+        cred = credentials.Certificate(os.getenv("SERVICE_ACCOUNT_PATH"))
         firebase_admin.initialize_app(cred)
         print("Firebase Admin SDK initialized successfully!")
 
