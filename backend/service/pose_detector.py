@@ -33,7 +33,8 @@ class PoseDetector:
                 lmList.append((id, cx, cy))
         return lmList
 
-def compare_videos(video1_path, video2_path):
+
+def compare_videos(video1_link, video2_link):
     cap1 = cv2.VideoCapture(video1_path)
     cap2 = cv2.VideoCapture(video2_path)
 
