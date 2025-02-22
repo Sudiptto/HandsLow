@@ -19,7 +19,7 @@ export default function Navbar() {
                 </div>
 
                 {/* Right: GitHub Icon Button */}
-                <a href="https://github.com/ishmamk1/echo">
+                <a href="https://github.com/Sudiptto/HandsLow">
                     <button className="bg-[#6C63FF] text-white rounded-lg font-bold transition-all duration-200 shadow-lg hover:bg-[#5a52d5] hover:scale-105 active:scale-95 flex items-center gap-2
 ">
                         <svg
