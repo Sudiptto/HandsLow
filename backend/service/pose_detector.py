@@ -8,6 +8,7 @@ import os
 import uuid
 import base64
 import tempfile
+from cloudinary1 import * 
 
 class PoseDetector:
     def __init__(self, detectionCon=0.7, trackCon=0.7):
@@ -89,10 +90,10 @@ def compare_videos(video1_link, video2_link):
     cap2.release()
     out.release()
 
-    # Read the generated video and encode it as Base64
+    video_url = upload_video(temp_video_path)
     with open(temp_video_path, "rb") as video_file:
         base64_video = base64.b64encode(video_file.read()).decode('utf-8')
 
     accuracy = (correct_frames / frame_count) * 100 if frame_count > 0 else 0
 
-    return {"accuracy": round(accuracy, 2), "encoded_video": base64_video}
+    return {"accuracy": round(accuracy, 2), "encoded_video": base64_video, "video_urk":video_url}
