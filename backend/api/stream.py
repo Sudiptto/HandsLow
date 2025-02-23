@@ -19,8 +19,9 @@ drill_encodings = {}
 stream = Blueprint('stream', __name__)
 @stream.route("/upload", methods=['POST'])
 def upload_videos():
-    video_link = request.json['video_link'] 
+    encoded_video = request.json['video_link'] 
     drill = request.json['drill']
+    encoded_drill = drill + ".mov"
 
     """
     benchmark = request.files['benchmark']
@@ -31,6 +32,6 @@ def upload_videos():
     """
     
     
-    accuracy_result = compare_videos(video_link)
+    accuracy_result = compare_videos(encoded_video, encoded_drill)
 
     return jsonify(accuracy_result)
