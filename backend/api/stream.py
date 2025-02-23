@@ -32,6 +32,7 @@ def upload_videos():
     with open(drill_filename, "rb") as drill_file:
         encoded_drill = base64.b64encode(drill_file.read()).decode('utf-8')
     
+    print("reached")
     accuracy_result = compare_videos(encoded_video, encoded_drill)
 
     return jsonify(accuracy_result)
