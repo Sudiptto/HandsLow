@@ -1,9 +1,12 @@
 import base64
 from huggingface_hub import InferenceClient
+import os
 
 # Load API Key
-with open("/Users/ishmam/HandsLow-1/backend/keys/llama.txt", "r") as file:
-    api_key = file.read().strip()
+
+api_key = os.getenv("HF_KEY")
+
+
 client = InferenceClient(api_key=api_key)
 
 # Load Boxing Coach Prompt
