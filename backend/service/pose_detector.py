@@ -9,6 +9,7 @@ import uuid
 import base64
 import tempfile
 import time
+from service.cloudinary1 import *
 
 from service.cloudinary1 import *
 
