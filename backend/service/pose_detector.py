@@ -35,7 +35,16 @@ class PoseDetector:
         return lmList
 
 
-def compare_videos(video1_link, video2_link):
+def decode_video(encoded_video):
+    decoded_data = base64.b64decode(encoded_video)
+    with tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_video:
+        temp_video.write(decoded_data)
+        return temp_video.name
+
+def compare_videos(encoded_user, encoded_drill):
+    video1_path = decode_video(encoded_user)
+    video2_path = decode_video(encoded_drill)
+
     cap1 = cv2.VideoCapture(video1_path)
     cap2 = cv2.VideoCapture(video2_path)
 
@@ -49,7 +58,6 @@ def compare_videos(video1_link, video2_link):
     fps = int(cap1.get(cv2.CAP_PROP_FPS)) or 30
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
 
-    # Create a temporary file to store the processed video
     with tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_video:
         temp_video_path = temp_video.name
 
@@ -65,8 +73,8 @@ def compare_videos(video1_link, video2_link):
         frame1 = cv2.resize(frame1, (width, height))
         frame2 = cv2.resize(frame2, (width, height))
 
-        frame1 = detector1.findPose(frame1, draw=True)  # Draw stick figure
-        frame2 = detector2.findPose(frame2, draw=True)  # Draw stick figure
+        frame1 = detector1.findPose(frame1, draw=True)
+        frame2 = detector2.findPose(frame2, draw=True)
 
         lmList1 = detector1.findPosition(frame1)
         lmList2 = detector2.findPosition(frame2)
@@ -82,7 +90,6 @@ def compare_videos(video1_link, video2_link):
                         cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
         frame_count += 1
-
         combined_frame = cv2.hconcat([frame1, frame2])
         out.write(combined_frame)
 
@@ -96,4 +103,4 @@ def compare_videos(video1_link, video2_link):
 
     accuracy = (correct_frames / frame_count) * 100 if frame_count > 0 else 0
 
-    return {"accuracy": round(accuracy, 2), "encoded_video": base64_video, "video_urk":video_url}
+    return {"accuracy": round(accuracy, 2), "encoded_video": base64_video, "video_url": video_url}

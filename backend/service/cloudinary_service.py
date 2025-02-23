@@ -1,6 +1,6 @@
 import cloudinary
 import cloudinary.uploader
-from service.passwords import *
+from passwords import *
 
 # Configure Cloudinary with your credentials
 cloudinary.config(
@@ -8,6 +8,7 @@ cloudinary.config(
     api_key=api_key,
     api_secret=api_secret
 )
+
 def upload_video(video_path):
     """
     Uploads a video to Cloudinary and returns the URL.
