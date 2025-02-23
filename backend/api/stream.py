@@ -38,7 +38,7 @@ def upload_videos():
     """
     
     
-    accuracy_result = compare_videos(video_link, )
+    accuracy_result = compare_videos(video_link)
 
     return jsonify(accuracy_result)
 
