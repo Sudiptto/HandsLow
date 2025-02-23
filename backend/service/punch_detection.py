@@ -1,3 +1,4 @@
+from io import BytesIO
 import cv2
 import mediapipe as mp
 import numpy as np
@@ -70,8 +71,12 @@ def compare_pose(keypoints):
 # ** Load a Video File Instead of a Live Camera Feed **
 # video_path = "/Users/ishmam/HandsLow-1/backend/drills/1.mov"  # Change this to your video file path
 
+from service.aws_service import upload_image_to_s3
+
 def analyze_video(video_path, screenshot_dir, screenshot_cooldown=3):
     last_screenshot_time = time.time()  # Initialize last screenshot time
+
+    presigned_urls = []
 
     # Load video
     cap = cv2.VideoCapture(video_path)
@@ -103,7 +108,14 @@ def analyze_video(video_path, screenshot_dir, screenshot_cooldown=3):
                 cv2.imwrite(screenshot_path, frame)
                 print(f"Screenshot saved: {screenshot_path}")
 
-        # Show the video with annotations
+                is_success, buffer = cv2.imencode('.png', frame)
+                if is_success:
+                    image_data = BytesIO(buffer)
+                    presigned_url = upload_image_to_s3(image_data)  # Upload to S3
+                    if presigned_url:
+                        presigned_urls.append(presigned_url)
+                        print(f"Screenshot uploaded: {presigned_url}")
+
         
         # Exit on 'q' key press
         if cv2.waitKey(25) & 0xFF == ord('q'):
@@ -111,5 +123,7 @@ def analyze_video(video_path, screenshot_dir, screenshot_cooldown=3):
 
     cap.release()
     cv2.destroyAllWindows()
+
+    return presigned_urls
 
 

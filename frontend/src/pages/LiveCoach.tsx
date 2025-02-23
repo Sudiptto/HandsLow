@@ -6,6 +6,7 @@ const LiveCoach = () => {
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const mediaRecorderRef = useRef<MediaRecorder | null>(null);
     const [recording, setRecording] = useState(false);
+    const [presignedUrls, setPresignedUrls] = useState<string[]>([]);  // State to hold presigned URLs
 
     useEffect(() => {
         const startVideoStream = async () => {
@@ -99,6 +100,14 @@ const LiveCoach = () => {
                 throw new Error("Failed to upload video");
             }
 
+            const data = await response.json();
+            console.log(response.json);
+
+            // Update presigned URLs state with the response data
+            if (data.presigned_urls && data.presigned_urls.length > 0) {
+                setPresignedUrls(data.presigned_urls);
+            }
+
             console.log("Video uploaded successfully!");
         } catch (error) {
             console.error("Error uploading video:", error);
@@ -109,21 +118,35 @@ const LiveCoach = () => {
         <div className="min-h-screen w-full bg-black flex flex-col items-center justify-center p-8">
             <h1 className="text-5xl text-white font-black mb-8">Live Coach</h1>
             
-            {/* Video Stream */}
-            <div className="w-full max-w-4xl bg-gray-900 rounded-lg overflow-hidden">
-                <video ref={videoRef} autoPlay playsInline className="w-full h-auto rounded-lg" />
-            </div>
-    
-            {/* Start Recording Button */}
-            <button
-                onClick={startRecording}
-                disabled={recording}
-                className={`mt-6 text-white text-xl font-bold py-3 px-8 rounded-lg transition-all 
-                    ${recording ? "bg-gray-500 cursor-not-allowed" : "bg-[#6C63FF] hover:bg-[#5a52d5]"}`}
-            >
-                {recording ? "Recording..." : "Record 5s Clip"}
-            </button>
-    
+            {/* Display Presigned URLs as images */}
+            {presignedUrls.length > 0 ? (
+                <div className="mt-8">
+                    <h2 className="text-white text-xl mb-4">Screenshots</h2>
+                    {presignedUrls.map((url, index) => (
+                        <div key={index} className="mb-4">
+                            <img src={url} alt={`Screenshot ${index + 1}`} className="w-64 h-64 object-cover rounded-lg" />
+                        </div>
+                    ))}
+                </div>
+            ) : (
+                // Video Stream and Record Button
+                <>
+                    <div className="w-full max-w-4xl bg-gray-900 rounded-lg overflow-hidden">
+                        <video ref={videoRef} autoPlay playsInline className="w-full h-auto rounded-lg" />
+                    </div>
+                    
+                    {/* Start Recording Button */}
+                    <button
+                        onClick={startRecording}
+                        disabled={recording}
+                        className={`mt-6 text-white text-xl font-bold py-3 px-8 rounded-lg transition-all 
+                            ${recording ? "bg-gray-500 cursor-not-allowed" : "bg-[#6C63FF] hover:bg-[#5a52d5]"}`}
+                    >
+                        {recording ? "Recording..." : "Record 5s Clip"}
+                    </button>
+                </>
+            )}
+            
             {/* Return to Home Button */}
             <button
                 onClick={() => navigate("/")}
@@ -132,7 +155,8 @@ const LiveCoach = () => {
                 Return to Home
             </button>
         </div>
-    );    
-};
+    );
+}    
 
 export default LiveCoach;
+

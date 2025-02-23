@@ -24,6 +24,3 @@ def upload_image_to_s3(image_file):
         print("Credentials not available")
         return None
 
-if __name__ == "__main__":
-    with open("../drills/1.mov", "rb") as file:
-        print(upload_image_to_s3(file))

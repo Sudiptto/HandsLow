@@ -67,9 +67,13 @@ def liveCoach():
 
         # Step 5: Call the analyze_video function with the file path
         screenshot_dir = "screenshots"  # Specify the directory where screenshots will be saved
-        analyze_video(file_path, screenshot_dir)
+        presigned_urls = analyze_video(file_path, screenshot_dir)
 
-        return jsonify({"message": "Video saved and analyzed successfully", "video_path": file_path}), 200
+        return jsonify({
+            "message": "Video saved and analyzed successfully",
+            "video_path": file_path,
+            "presigned_urls": presigned_urls  # Add the presigned URLs in the response
+        }), 200
 
     except Exception as e:
         return jsonify({"error": f"Failed to process video: {str(e)}"}), 500
