@@ -7,16 +7,14 @@ const LiveCoach = () => {
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const mediaRecorderRef = useRef<MediaRecorder | null>(null);
     const [recording, setRecording] = useState(false);
-    const [presignedUrls, setPresignedUrls] = useState<string[]>([]);
+    const [presignedUrls, setPresignedUrls] = useState<string[]>([]);  // State to hold presigned URLs
     const [critiques, setCritiques] = useState<string[]>([]);
 
     useEffect(() => {
         const startVideoStream = async () => {
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({
-                    video: true, 
-                    audio: false
-                });
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+
                 if (videoRef.current) {
                     videoRef.current.srcObject = stream;
                 }
@@ -24,13 +22,12 @@ const LiveCoach = () => {
                 console.error("Error accessing webcam:", error);
             }
         };
+
         startVideoStream();
 
         return () => {
             if (videoRef.current && videoRef.current.srcObject) {
-                (videoRef.current.srcObject as MediaStream)
-                    .getTracks()
-                    .forEach(track => track.stop());
+                (videoRef.current.srcObject as MediaStream).getTracks().forEach(track => track.stop());
             }
         };
     }, []);
@@ -50,7 +47,8 @@ const LiveCoach = () => {
             mediaRecorder.onstop = async () => {
                 const recordedBlob = new Blob(recordedChunks, { type: "video/webm" });
                 const video = new File([recordedBlob], 'recorded-video.webm', { type: 'video/webm' });
-                await uploadVideo(video);
+
+                await uploadVideo(video);  // Upload the video after recording stops
             };
 
             setTimeout(() => {
@@ -61,7 +59,7 @@ const LiveCoach = () => {
                     mediaRecorder.stop();
                     setRecording(false);
                 }, 5000);
-            }, 1000);
+            }, 1000); // Delay for user action before starting the recording
 
             mediaRecorderRef.current = mediaRecorder;
         }
@@ -85,7 +83,10 @@ const LiveCoach = () => {
     const uploadVideo = async (file: File) => {
         try {
             const base64String = await convertToBase64(file);
-            const payload = { video: base64String };
+
+            const payload = {
+                video: base64String,
+            };
 
             const response = await fetch("http://localhost:5001/liveCoach", {
                 method: "POST",
@@ -103,8 +104,9 @@ const LiveCoach = () => {
 
             if (data.presigned_urls && data.presigned_urls.length > 0) {
                 setPresignedUrls(data.presigned_urls);
-                setCritiques(data.critique);
+                setCritiques(data.critique); // Assuming critiques are returned in the response
             }
+
             console.log("Video uploaded successfully!");
         } catch (error) {
             console.error("Error uploading video:", error);
@@ -112,8 +114,14 @@ const LiveCoach = () => {
     };
 
     return (
-        <div className="live-coach-container min-h-screen w-full bg-[#0A0F1C] flex flex-col items-center p-6">
-            <h1 className="title text-3xl md:text-5xl font-extrabold text-white mt-8 mb-6">
+        <div className="min-h-screen w-full bg-[#0A0F1C] flex flex-col items-center p-6">
+        {/* Decorative Background */}
+        <div className="fixed inset-0 bg-gradient-to-br from-purple-900/20 via-transparent to-blue-900/20" />
+        <div className="fixed inset-0 bg-[url('/grid.svg')] opacity-20" />
+        
+        {/* Content Container */}
+        <div className="relative z-10 w-full flex flex-col items-center">
+            <h1 className="text-3xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-fuchsia-500 to-blue-400 mt-8 mb-6">
                 Live Coach
             </h1>
 
@@ -124,16 +132,16 @@ const LiveCoach = () => {
                     </h2>
                     <div className="screenshots-list grid grid-cols-1 md:grid-cols-2 gap-6">
                         {presignedUrls.map((url, index) => (
-                            <div 
-                                key={index} 
-                                className="screenshot-item bg-[#0A0F1C] p-4 rounded-xl shadow-lg border border-white/5"
+                            <div
+                                key={index}
+                                className="screenshot-item bg-[#0A0F1C] p-4 rounded-xl shadow-lg border border-white/5 hover:border-purple-500/50 transition-all duration-200"
                             >
                                 <img
                                     src={url}
                                     alt={`Screenshot ${index + 1}`}
-                                    className="screenshot-image rounded-lg mb-3 w-full object-cover"
+                                    className="screenshot-image rounded-lg mb-3 w-full aspect-video object-cover"
                                 />
-                                <p className="critique-text text-gray-400">
+                                <p className="critique-text text-gray-400 leading-relaxed">
                                     {critiques[index]}
                                 </p>
                             </div>
@@ -141,35 +149,41 @@ const LiveCoach = () => {
                     </div>
                 </div>
             ) : (
-                <div className="flex flex-col items-center justify-center gap-4">
-                    <div className="video-container overflow-hidden rounded-xl border border-white/5 shadow-lg bg-black/50">
-                        <video 
-                            ref={videoRef} 
-                            autoPlay 
-                            playsInline 
-                            className="video-stream w-80 h-60 md:w-[600px] md:h-[400px] object-cover"
-                        />
+                <div className="flex flex-col items-center justify-center gap-4 w-full max-w-2xl">
+                    <div className="w-full bg-[#151A2D] rounded-xl p-6 border border-white/5 shadow-xl">
+                        <div className="video-container overflow-hidden rounded-xl border border-white/5 shadow-lg bg-black/50 mb-6">
+                            <video
+                                ref={videoRef}
+                                autoPlay
+                                playsInline
+                                className="w-full aspect-video object-cover"
+                            />
+                        </div>
+                        <button
+                            onClick={startRecording}
+                            disabled={recording}
+                            className={`w-full px-6 py-4 rounded-xl font-semibold text-white transition-all duration-200 
+                                ${recording 
+                                    ? "bg-gray-600 cursor-not-allowed" 
+                                    : "bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 hover:scale-[1.02]"
+                                }
+                            `}
+                        >
+                            {recording ? "Recording..." : "Record 5s Clip"}
+                        </button>
                     </div>
-                    <button
-                        onClick={startRecording}
-                        disabled={recording}
-                        className={`record-btn px-6 py-3 rounded-lg font-semibold text-white transition-colors duration-200 
-                            ${recording ? "bg-gray-600 cursor-not-allowed" : "bg-purple-600 hover:bg-purple-500"} 
-                        `}
-                    >
-                        {recording ? "Recording..." : "Record 5s Clip"}
-                    </button>
                 </div>
             )}
 
             <button
                 onClick={() => navigate("/")}
-                className="return-home-btn mt-6 px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-semibold transition-colors"
+                className="mt-6 px-8 py-4 bg-white/5 border border-white/10 hover:bg-white/10 text-white rounded-xl font-semibold transition-all hover:scale-105 active:scale-95"
             >
                 Return to Home
             </button>
         </div>
+    </div>
     );
-};
+}
 
 export default LiveCoach;
