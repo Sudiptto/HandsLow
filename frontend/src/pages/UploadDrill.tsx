@@ -116,7 +116,7 @@ const UploadDrill: React.FC = () => {
       const analysisData = {
         calories: calculateCaloriesBurned(weight, videoDuration ?? 0), // Ensure duration is not null
         analysis: data.analysis, // Text from the API
-        correctVideo: data.encodedVideo, // Use API's returned video encoding
+        correctVideo: data.video_urk, // Use API's returned video encoding
         ogVideo: base64Video, // Original uploaded video
       };
   

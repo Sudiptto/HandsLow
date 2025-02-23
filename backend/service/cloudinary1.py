@@ -1,6 +1,6 @@
 import cloudinary
 import cloudinary.uploader
-from passwords import *
+from service.passwords import *
 
 # Configure Cloudinary with your credentials
 cloudinary.config(

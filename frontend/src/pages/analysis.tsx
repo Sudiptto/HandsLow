@@ -90,9 +90,10 @@ const AnalysisPage: React.FC<AnalysisPageProps> = ({
      
         <div className="mt-6 w-full max-w-md">
           <p className="text-white mb-2">Preview:</p>
-          <video controls className="w-full rounded-lg">
-            <source src={analysisData.base64video} type="video/mov" />
-          </video>
+          <video width="320" height="240" controls>
+            <source src={analysisData.correctVideo} type="video/mp4" />
+            Your browser does not support the video tag.
+        </video>
         </div>
 
         
