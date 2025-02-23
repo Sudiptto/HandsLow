@@ -9,7 +9,7 @@ import Analysis from "./pages/analysis";
 import NotFound from "./pages/NotFound";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
-import LiveCoach from "./pages/liveCoach";
+import LiveCoach from "./pages/LiveCoach";
 
 // Import your components
 

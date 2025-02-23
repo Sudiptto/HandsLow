@@ -24,6 +24,7 @@ def upload_video(video_path):
         return None
 
 # Example usage:
-video_url = upload_video("1.mov")
-print("Uploaded Video URL:", video_url)
+if __name__ == "__main__":
+    video_url = upload_video("backend/videos/output_1740279207.mp4")
+    print("Uploaded Video URL:", video_url)
 

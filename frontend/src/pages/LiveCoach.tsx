@@ -1,11 +1,14 @@
 import React, { useRef, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "./LiveCoach.css";  // Ensure to import the custom CSS
 
 const LiveCoach = () => {
     const navigate = useNavigate();
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const mediaRecorderRef = useRef<MediaRecorder | null>(null);
     const [recording, setRecording] = useState(false);
+    const [presignedUrls, setPresignedUrls] = useState<string[]>([]);  // State to hold presigned URLs
+    const [critiques, setCritiques] = useState<string[]>([]);
 
     useEffect(() => {
         const startVideoStream = async () => {
@@ -48,12 +51,10 @@ const LiveCoach = () => {
                 await uploadVideo(video);  // Upload the video after recording stops
             };
 
-            // Delay before starting the recording
             setTimeout(() => {
                 mediaRecorder.start();
                 setRecording(true);
 
-                // Stop after 5 seconds
                 setTimeout(() => {
                     mediaRecorder.stop();
                     setRecording(false);
@@ -87,7 +88,7 @@ const LiveCoach = () => {
                 video: base64String,
             };
 
-            const response = await fetch("http://localhost:5000/upload", {
+            const response = await fetch("http://localhost:5001/liveCoach", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -99,6 +100,13 @@ const LiveCoach = () => {
                 throw new Error("Failed to upload video");
             }
 
+            const data = await response.json();
+
+            if (data.presigned_urls && data.presigned_urls.length > 0) {
+                setPresignedUrls(data.presigned_urls);
+                setCritiques(data.critique); // Assuming critiques are returned in the response
+            }
+
             console.log("Video uploaded successfully!");
         } catch (error) {
             console.error("Error uploading video:", error);
@@ -106,33 +114,53 @@ const LiveCoach = () => {
     };
 
     return (
-        <div className="min-h-screen w-full bg-black flex flex-col items-center justify-center p-8">
-            <h1 className="text-5xl text-white font-black mb-8">Live Coach</h1>
-            
-            {/* Video Stream */}
-            <div className="w-full max-w-4xl bg-gray-900 rounded-lg overflow-hidden">
-                <video ref={videoRef} autoPlay playsInline className="w-full h-auto rounded-lg" />
-            </div>
-    
-            {/* Start Recording Button */}
-            <button
-                onClick={startRecording}
-                disabled={recording}
-                className={`mt-6 text-white text-xl font-bold py-3 px-8 rounded-lg transition-all 
-                    ${recording ? "bg-gray-500 cursor-not-allowed" : "bg-[#6C63FF] hover:bg-[#5a52d5]"}`}
-            >
-                {recording ? "Recording..." : "Record 5s Clip"}
-            </button>
-    
+        <div className="live-coach-container">
+            <h1 className="title">Live Coach</h1>
+
+            {/* Display Presigned URLs and Critiques as images */}
+            {presignedUrls.length > 0 && critiques.length > 0 ? (
+                <div className="screenshots-section">
+                    <h2 className="section-title">Screenshots & Critique</h2>
+                    <div className="screenshots-list">
+                        {presignedUrls.map((url, index) => (
+                            <div key={index} className="screenshot-item">
+                                <img
+                                    src={url}
+                                    alt={`Screenshot ${index + 1}`}
+                                    className="screenshot-image"
+                                />
+                                <p className="critique-text">{critiques[index]}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            ) : (
+                // Video Stream and Record Button
+                <>
+                    <div className="video-container">
+                        <video ref={videoRef} autoPlay playsInline className="video-stream" />
+                    </div>
+
+                    {/* Start Recording Button */}
+                    <button
+                        onClick={startRecording}
+                        disabled={recording}
+                        className={`record-btn ${recording ? "disabled" : ""}`}
+                    >
+                        {recording ? "Recording..." : "Record 5s Clip"}
+                    </button>
+                </>
+            )}
+
             {/* Return to Home Button */}
             <button
                 onClick={() => navigate("/")}
-                className="mt-4 bg-gray-700 hover:bg-gray-600 text-white text-xl font-bold py-3 px-8 rounded-lg transition-all"
+                className="return-home-btn"
             >
                 Return to Home
             </button>
         </div>
-    );    
-};
+    );
+}
 
 export default LiveCoach;
