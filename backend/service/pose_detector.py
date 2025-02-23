@@ -8,7 +8,6 @@ import os
 import uuid
 import base64
 import tempfile
-from service.cloudinary1 import * 
 import time
 
 class PoseDetector:
