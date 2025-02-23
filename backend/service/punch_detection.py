@@ -74,56 +74,66 @@ def compare_pose(keypoints):
 from service.aws_service import upload_image_to_s3
 
 def analyze_video(video_path, screenshot_dir, screenshot_cooldown=3):
-    last_screenshot_time = time.time()  # Initialize last screenshot time
+   last_screenshot_time = time.time()  # Initialize last screenshot time
 
-    presigned_urls = []
 
-    # Load video
-    cap = cv2.VideoCapture(video_path)
+   presigned_urls = []
 
-    while cap.isOpened():
-        ret, frame = cap.read()
-        if not ret:
-            break  # Stop when the video ends
 
-        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        results = pose.process(frame_rgb)
+   # Load video
+   cap = cv2.VideoCapture(video_path)
 
-        if results.pose_landmarks:
-            mp_drawing.draw_landmarks(frame, results.pose_landmarks, mp_pose.POSE_CONNECTIONS)
-            keypoints = [[lm.x, lm.y] for lm in results.pose_landmarks.landmark]
-            similarities = compare_pose(keypoints)
-            
-            # Display similarity scores
-            for i, (key, score) in enumerate(similarities.items()):
-                color = (0, 255, 0) if score > 0.9 else (0, 0, 255)
-                cv2.putText(frame, f"{key}: {score:.2f}", (50, 50 + i * 30),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.6, color, 2)
 
-            # Take screenshot if any punch is above 0.9 and enough time has passed
-            current_time = time.time()
-            if any(score > 0.9 for score in similarities.values()) and (current_time - last_screenshot_time > screenshot_cooldown):
-                last_screenshot_time = current_time  # Update last screenshot time
-                screenshot_path = os.path.join(screenshot_dir, f"{uuid.uuid4().hex}.png")
-                cv2.imwrite(screenshot_path, frame)
-                print(f"Screenshot saved: {screenshot_path}")
+   while cap.isOpened():
+       ret, frame = cap.read()
+       if not ret:
+           break  # Stop when the video ends
 
-                is_success, buffer = cv2.imencode('.png', frame)
-                if is_success:
-                    image_data = BytesIO(buffer)
-                    presigned_url = upload_image_to_s3(image_data)  # Upload to S3
-                    if presigned_url:
-                        presigned_urls.append(presigned_url)
-                        print(f"Screenshot uploaded: {presigned_url}")
 
-        
-        # Exit on 'q' key press
-        if cv2.waitKey(25) & 0xFF == ord('q'):
-            break
+       frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+       results = pose.process(frame_rgb)
 
-    cap.release()
-    cv2.destroyAllWindows()
 
-    return presigned_urls
+       if results.pose_landmarks:
+           mp_drawing.draw_landmarks(frame, results.pose_landmarks, mp_pose.POSE_CONNECTIONS)
+           keypoints = [[lm.x, lm.y] for lm in results.pose_landmarks.landmark]
+           similarities = compare_pose(keypoints)
+          
+           # Display similarity scores
+           for i, (key, score) in enumerate(similarities.items()):
+               color = (0, 255, 0) if score > 0.9 else (0, 0, 255)
+               cv2.putText(frame, f"{key}: {score:.2f}", (50, 50 + i * 30),
+                           cv2.FONT_HERSHEY_SIMPLEX, 0.6, color, 2)
+
+
+           # Take screenshot if any punch is above 0.9 and enough time has passed
+           current_time = time.time()
+           if any(score > 0.9 for score in similarities.values()) and (current_time - last_screenshot_time > screenshot_cooldown):
+               last_screenshot_time = current_time  # Update last screenshot time
+               screenshot_path = os.path.join(screenshot_dir, f"{uuid.uuid4().hex}.png")
+               cv2.imwrite(screenshot_path, frame)
+               print(f"Screenshot saved: {screenshot_path}")
+
+
+               is_success, buffer = cv2.imencode('.png', frame)
+               if is_success:
+                   image_data = BytesIO(buffer)
+                   presigned_url = upload_image_to_s3(image_data)  # Upload to S3
+                   if presigned_url:
+                       presigned_urls.append(presigned_url)
+                       print(f"Screenshot uploaded: {presigned_url}")
+
+
+      
+       # Exit on 'q' key press
+       if cv2.waitKey(25) & 0xFF == ord('q'):
+           break
+
+
+   cap.release()
+   cv2.destroyAllWindows()
+
+
+   return presigned_urls
 
 
