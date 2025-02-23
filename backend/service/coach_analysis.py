@@ -10,7 +10,7 @@ api_key = os.getenv("HF_KEY")
 client = InferenceClient(api_key=api_key)
 
 # Load Boxing Coach Prompt
-COACH_PROMPT = """You are a professional coach that reviews form. In 2 sentences max and in real english, give descriptive info on what they can improve with their form and be descriptive."""
+COACH_PROMPT = """You are a boxing coach providing form feedback. Limit analysis to 200 characters. Focus on basic advice, like arm position, foot stance, or body alignment. Avoid measurements or data."""
 
 def recognize(presigned_urls):
     """

@@ -1,0 +1,124 @@
+/* Container */
+.live-coach-container {
+    min-height: 100vh;
+    width: 100%;
+    background-color: #1a1a1a;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    color: white;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Title */
+.title {
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+/* Section Titles */
+.section-title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* Screenshots Section */
+.screenshots-section {
+    margin-top: 2rem;
+}
+
+.screenshots-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem;
+}
+
+.screenshot-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 50%; /* Adjusted to make the items smaller */
+    width: 100%;
+}
+
+.screenshot-image {
+    width: 50%; /* Makes the image 50% of its full scale */
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    object-fit: cover;
+}
+
+.critique-text {
+    margin-top: 1rem;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: normal;
+    color: #f1f1f1;
+    max-width: 100%;
+    word-wrap: break-word;
+}
+
+/* Video Container */
+.video-container {
+    width: 100%;
+    max-width: 600px;
+    background-color: #333;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Video Stream */
+.video-stream {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+/* Button Styles */
+.record-btn {
+    margin-top: 2rem;
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+    background-color: #6c63ff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.record-btn:hover {
+    background-color: #5a52d5;
+}
+
+.record-btn.disabled {
+    background-color: #888;
+    cursor: not-allowed;
+}
+
+.return-home-btn {
+    margin-top: 2rem;
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+    background-color: #444;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.return-home-btn:hover {
+    background-color: #333;
+}
