@@ -4,11 +4,10 @@ from service.passwords import *
 
 # Configure Cloudinary with your credentials
 cloudinary.config(
-    cloud_name=CLOUDINARY_CLOUD_NAME,
-    api_key=CLOUDINARY_API_KEY,
-    api_secret=CLOUDINARY_API_SECRET
+    cloud_name=cloud_name,
+    api_key=api_key,
+    api_secret=api_secret
 )
-
 def upload_video(video_path):
     """
     Uploads a video to Cloudinary and returns the URL.
