@@ -94,7 +94,7 @@ export default function HomePage() {
         <div className="min-h-screen w-full bg-black flex flex-col items-center justify-center p-8">
             <div className="w-full max-w-2xl mx-auto">
                 <Title 
-                    text="HandsLOW" 
+                    text="HandsUP" 
                     subtitle="Don't get clipped!" 
                 />
                 
