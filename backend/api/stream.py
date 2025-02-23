@@ -42,7 +42,7 @@ stream = Blueprint('stream', __name__)
 def upload_videos():
     encoded_video = request.json['video']  
     drill = request.json['drill']
-    drill_filename = f"drills/{drill}.mov"
+    drill_filename = f"drills/JabMaster8.mp4"
 
     print("PRINTING DRILL FILENAME" + drill_filename)
 
