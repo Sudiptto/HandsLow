@@ -54,6 +54,8 @@ const UploadDrill: React.FC = () => {
     reader.readAsDataURL(file);
     reader.onload = () => {
       if (typeof reader.result === 'string') {
+        let x = reader.result;
+
         setBase64Video(reader.result);
   
         // Create a video element to get duration
@@ -91,6 +93,7 @@ const UploadDrill: React.FC = () => {
     console.log('Submitting data to backend...');
     console.log("DRILL: ", drill);
     console.log("ENCODING: ", base64Video);
+    let video1 = base64Video.substring(22);
     try {
       // Send the request to the backend
       const response = await fetch('http://127.0.0.1:5001/upload', {
@@ -99,8 +102,8 @@ const UploadDrill: React.FC = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          drill,
-          video: base64Video, // Send the base64 video
+          drill: 1,
+          video: video1, // Send the base64 video
         }),
       });
   
@@ -111,19 +114,19 @@ const UploadDrill: React.FC = () => {
       const data = await response.json(); // Response from backend
   
       console.log('API Response: ', data);
-  
+      
+      
       // Assuming data contains { accuracy: ..., encodedVideo: ..., otherFields: ... }
       const analysisData = {
         calories: calculateCaloriesBurned(weight, videoDuration ?? 0), // Ensure duration is not null
         analysis: data.analysis, // Text from the API
-        correctVideo: data.video_urk, // Use API's returned video encoding
-        ogVideo: base64Video, // Original uploaded video
+        correctVideo: data.video_url, // Use API's returned video encoding
       };
   
       console.log("Submission complete. Redirecting to analysis...");
       
       // Navigate to analysis page
-      navigate('/analysis', { state: { drill, analysisData, weight } });
+      navigate('/analysis', { state: { drill, analysisData, weight } }); 
   
     } catch (error) {
       console.error('Error submitting data:', error);

@@ -103,4 +103,4 @@ def compare_videos(encoded_user, encoded_drill):
 
     accuracy = (correct_frames / frame_count) * 100 if frame_count > 0 else 0
 
-    return {"accuracy": round(accuracy, 2), "encoded_video": base64_video, "video_url": video_url}
+    return {"accuracy": round(accuracy, 2), "video_url": video_url[:-3] + "mov"}

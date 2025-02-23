@@ -33,7 +33,7 @@ def is_base64(sb):
 stream = Blueprint('stream', __name__)
 @stream.route("/upload", methods=['POST'])
 def upload_videos():
-    encoded_video = request.json['video'] 
+    encoded_video = request.json['video']  
     drill = request.json['drill']
     drill_filename = f"drills/{drill}.mov"
 
