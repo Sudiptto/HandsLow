@@ -8,6 +8,7 @@ const LiveCoach = () => {
    const mediaRecorderRef = useRef<MediaRecorder | null>(null);
    const [recording, setRecording] = useState(false);
    const [presignedUrls, setPresignedUrls] = useState<string[]>([]);  // State to hold presigned URLs
+   const [critiques, setCritiques] = useState<string[]>([]);
 
 
    useEffect(() => {
@@ -124,8 +125,10 @@ const LiveCoach = () => {
 
            // Update presigned URLs state with the response data
            if (data.presigned_urls && data.presigned_urls.length > 0) {
-               setPresignedUrls(data.presigned_urls);
-           }
+            setPresignedUrls(data.presigned_urls);
+            setCritiques(data.critique); // Assuming critiques are returned in the response
+            }
+
 
 
            console.log("Video uploaded successfully!");
@@ -140,12 +143,18 @@ const LiveCoach = () => {
            <h1 className="text-5xl text-white font-black mb-8">Live Coach</h1>
           
            {/* Display Presigned URLs as images */}
-           {presignedUrls.length > 0 ? (
+            {/* Display Presigned URLs and Critiques as images */}
+            {presignedUrls.length > 0 && critiques.length > 0 ? (
                <div className="mt-8">
-                   <h2 className="text-white text-xl mb-4">Screenshots</h2>
+                   <h2 className="text-white text-xl mb-4">Screenshots & Critique</h2>
                    {presignedUrls.map((url, index) => (
-                       <div key={index} className="mb-4">
-                           <img src={url} alt={`Screenshot ${index + 1}`} className="w-64 h-64 object-cover rounded-lg" />
+                       <div key={index} className="mb-4 flex flex-col items-center">
+                           <img
+                               src={url}
+                               alt={`Screenshot ${index + 1}`}
+                               className="w-64 h-64 object-cover rounded-lg mb-2"
+                           />
+                           <p className="text-white text-center">{critiques[index]}</p>
                        </div>
                    ))}
                </div>

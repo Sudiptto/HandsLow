@@ -22,6 +22,7 @@ import uuid
 import base64
 import binascii
 
+from service.coach_analysis import recognize
 
 drill_encodings = {}
 
@@ -58,6 +59,8 @@ def upload_videos():
 
 UPLOAD_FOLDER = os.getenv("UPLOAD_FOLDER")
 
+
+
 @stream.route("/liveCoach", methods=['POST'])
 def liveCoach():
     try:
@@ -82,10 +85,13 @@ def liveCoach():
         screenshot_dir = "screenshots"  # Specify the directory where screenshots will be saved
         presigned_urls = analyze_video(file_path, screenshot_dir)
 
+        critique = recognize(presigned_urls)
+        print(critique)
         return jsonify({
             "message": "Video saved and analyzed successfully",
             "video_path": file_path,
-            "presigned_urls": presigned_urls  # Add the presigned URLs in the response
+            "presigned_urls": presigned_urls,  # Add the presigned URLs in the response
+            "critique": critique  # Add the critique from the LLaMA model
         }), 200
 
     except Exception as e:
