@@ -19,29 +19,30 @@ import base64
 import os
 
 import uuid
+import base64
 
 
 drill_encodings = {}
 
+def encode_video(video_path):
+    with open(video_path, "rb") as video_file:
+        return base64.b64encode(video_file.read()).decode('utf-8')
+
 stream = Blueprint('stream', __name__)
 @stream.route("/upload", methods=['POST'])
 def upload_videos():
-    encoded_video = request.json['video_link'] 
+    encoded_video = request.json['video'] 
     drill = request.json['drill']
-    encoded_drill = drill + ".mov"
-
-    """
-    benchmark = request.files['benchmark']
-    user = request.files['user']
-
-    benchmark.save(benchmark_path)
-    user.save(user_path)
-    """
+    drill_filename = f"drills/{drill}.mov"
     
+    with open(drill_filename, "rb") as drill_file:
+        encoded_drill = base64.b64encode(drill_file.read()).decode('utf-8')
     
+    print("reached")
     accuracy_result = compare_videos(encoded_video, encoded_drill)
 
     return jsonify(accuracy_result)
+
 
 UPLOAD_FOLDER = "/Users/ishmam/HandsLow-1/backend/processed_videos"
 
@@ -77,6 +78,5 @@ def liveCoach():
 
     except Exception as e:
         return jsonify({"error": f"Failed to process video: {str(e)}"}), 500
-
 
 
