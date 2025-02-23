@@ -23,7 +23,7 @@ const AnalysisPage: React.FC<AnalysisPageProps> = ({
   };
 
   const handleNewCombo = () => {
-    console.log("NEW COMBO clicked");
+    console.log("NEW COMBO clicked"); 
     // Insert your logic here
   };
 
@@ -97,13 +97,6 @@ const AnalysisPage: React.FC<AnalysisPageProps> = ({
         </div>
 
         
-        <div className="mt-6 w-full max-w-md">
-          <p className="text-white mb-2">Preview:</p>
-          <video controls className="w-full rounded-lg">
-            <source src={analysisData.ogVideo} type="video/mp4" />
-          </video>
-        </div>
-      
 
       <div className="flex flex-col md:flex-row gap-4 mt-8">
         <button
