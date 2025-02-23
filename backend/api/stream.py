@@ -13,25 +13,26 @@ from service.pose_detector import compare_videos
 
 from service.access_drill import encode_drill
 
+import base64
+
 
 drill_encodings = {}
+
+def encode_video(video_path):
+    with open(video_path, "rb") as video_file:
+        return base64.b64encode(video_file.read()).decode('utf-8')
 
 stream = Blueprint('stream', __name__)
 @stream.route("/upload", methods=['POST'])
 def upload_videos():
     encoded_video = request.json['video_link'] 
     drill = request.json['drill']
-    encoded_drill = drill + ".mov"
-
-    """
-    benchmark = request.files['benchmark']
-    user = request.files['user']
-
-    benchmark.save(benchmark_path)
-    user.save(user_path)
-    """
+    drill_filename = f"drills/{drill}.mov"
     
+    with open(drill_filename, "rb") as drill_file:
+        encoded_drill = base64.b64encode(drill_file.read()).decode('utf-8')
     
     accuracy_result = compare_videos(encoded_video, encoded_drill)
 
     return jsonify(accuracy_result)
+
