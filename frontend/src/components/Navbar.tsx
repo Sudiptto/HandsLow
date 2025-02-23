@@ -14,7 +14,7 @@ export default function Navbar() {
                 {/* Center: Echo Text */}
                 <div className="text-center flex-grow">
                     <a href="/">
-                        <span className="text-white text-2xl transition-all duration-300 hover:scale-105">HandsLOW!</span>
+                        <span className="text-white text-2xl transition-all duration-300 hover:scale-105">HandsUP!</span>
                     </a>
                 </div>
 
