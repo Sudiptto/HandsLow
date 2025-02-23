@@ -9,6 +9,7 @@ import uuid
 import base64
 import tempfile
 from service.cloudinary1 import * 
+import time
 
 class PoseDetector:
     def __init__(self, detectionCon=0.7, trackCon=0.7):
@@ -58,10 +59,15 @@ def compare_videos(encoded_user, encoded_drill):
     fps = int(cap1.get(cv2.CAP_PROP_FPS)) or 30
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
 
-    with tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_video:
-        temp_video_path = temp_video.name
+    # Ensure the "videos" folder exists
+    if not os.path.exists("videos"):
+        os.makedirs("videos")
+    
+    # Create a unique filename for the output video
+    video_path = os.path.join("videos", f"output_{int(time.time())}.mp4")
+    print("Saving video to: " + video_path)
 
-    out = cv2.VideoWriter(temp_video_path, fourcc, fps, (width * 2, height))
+    out = cv2.VideoWriter(video_path, fourcc, fps, (width * 2, height))
 
     while cap1.isOpened() and cap2.isOpened():
         ret1, frame1 = cap1.read()
@@ -97,10 +103,9 @@ def compare_videos(encoded_user, encoded_drill):
     cap2.release()
     out.release()
 
-    video_url = upload_video(temp_video_path)
-    with open(temp_video_path, "rb") as video_file:
-        base64_video = base64.b64encode(video_file.read()).decode('utf-8')
+    # Pass the local video path to the upload function
+    video_url = upload_video(video_path)[:-3] + "mov"
 
     accuracy = (correct_frames / frame_count) * 100 if frame_count > 0 else 0
 
-    return {"accuracy": round(accuracy, 2), "encoded_video": base64_video, "video_url": video_url}
+    return {"accuracy": round(accuracy, 2), "video_url": video_url}

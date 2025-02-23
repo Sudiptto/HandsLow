@@ -42,7 +42,7 @@ def upload_videos():
     print(is_base64(encoded_video))
     
     with open(drill_filename, "rb") as drill_file:
-        encoded_drill = base64.b64encode(drill_file.read()).decode('utf-8')
+        encoded_drill = base64.b64encode(drill_file.read())
     
     print("reached")
     accuracy_result = compare_videos(encoded_video, encoded_drill)

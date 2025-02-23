@@ -20,9 +20,10 @@ def upload_video(video_path):
         return response["secure_url"]  # Returns the video URL
     except Exception as e:
         print(f"Error uploading video: {e}")
+        print(f"Video path is wrong or smth: {video_path}")
         return None
 
 # Example usage:
-video_url = upload_video("1.mov")
-print("Uploaded Video URL:", video_url)
+# video_url = upload_video("1.mov")
+# print("Uploaded Video URL:", video_url)
 
