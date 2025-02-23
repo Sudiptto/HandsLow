@@ -9,6 +9,7 @@ import uuid
 import base64
 import tempfile
 import time
+from service.cloudinary1 import *
 
 class PoseDetector:
     def __init__(self, detectionCon=0.7, trackCon=0.7):
@@ -107,5 +108,5 @@ def compare_videos(encoded_user, encoded_drill):
 
     accuracy = (correct_frames / frame_count) * 100 if frame_count > 0 else 0
 
-  return {"accuracy": round(accuracy, 2), "video_url": video_url[:-3] + "mov"}
+    return {"accuracy": round(accuracy, 2), "video_url": video_url[:-3] + "mov"}
 

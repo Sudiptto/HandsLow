@@ -57,9 +57,7 @@ def upload_videos():
     return jsonify(accuracy_result)
 
 
-UPLOAD_FOLDER = os.getenv("UPLOAD_FOLDER")
-
-
+UPLOAD_FOLDER = "\Users\biswa\Desktop\HandsLow\backend\processed_videos"
 
 @stream.route("/liveCoach", methods=['POST'])
 def liveCoach():
