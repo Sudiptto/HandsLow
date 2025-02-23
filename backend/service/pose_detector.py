@@ -8,7 +8,6 @@ import os
 import uuid
 import base64
 import tempfile
-from service.cloudinary1 import * 
 
 class PoseDetector:
     def __init__(self, detectionCon=0.7, trackCon=0.7):
