@@ -179,7 +179,4 @@ const LiveCoach = () => {
    );
 }   
 
-
 export default LiveCoach;
-
-
